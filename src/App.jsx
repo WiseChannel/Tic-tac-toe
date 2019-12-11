@@ -8,17 +8,51 @@ class App extends React.Component {
             squares: Array(9).fill(null),
             count: 0
         }
+        this.winnerLine = [
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [0,4,8],
+            [2,4,6]
+        ]
     }
 
+    isWiner = () => {
+        let s = (this.state.count % 2 === 0) ? 'X' : 'O'; //проверка элемента по клику
+        for (let i = 0; i < 8; i++) {
+            let line = this.winnerLine[i];
+            if (this.state.squares[line[0]] === s
+                && this.state.squares[line[1]] === s
+                && this.state.squares[line[2]] === s ) {
+                    alert(s + 'win')
+                setTimeout(() => {
+                    this.setState({ squares: Array(9).fill(null) });
+                    this.setState({ count: Array(9).fill(null) })
+                }, 3000)
+            }
+        }
+    };
 
-    clickHendler = event => {
+    clickHendler = (event) => {
         console.log('work');
         let data = event.target.getAttribute('data'); //номер квадрата по которому кликнули
         let currentSquare = this.state.squares;
-        currentSquare[data] = (this.state.count % 2 === 0) ? 'X' : 'O';
-        this.setState({ count: this.state.count + 1 });
-        this.setState({ squares: currentSquare });
-    }
+
+        if (currentSquare[data] === null) {
+            currentSquare[data] = (this.state.count % 2 === 0) ? 'X' : 'O';
+            this.setState({ count: this.state.count + 1 });
+            this.setState({ squares: currentSquare });
+        } else {
+            alert(new Error('Нельзя нажимать два раза'));
+            console.error('Нельзя нажимать два раза')
+        }
+
+        this.isWiner()
+
+    };
 
     render() {
         return (
